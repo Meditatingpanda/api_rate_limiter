@@ -1,0 +1,31 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model RateLimit {
+  id              Int      @id @default(autoincrement())
+  phoneNumber     String
+  ipAddress       String
+  minuteCount     Int      @default(0)
+  dailyCount      Int      @default(0)
+  lastMinuteReset DateTime @default(now())
+  lastDailyReset  DateTime @default(now())
+
+  @@unique([phoneNumber, ipAddress])
+}
+
+model RateViolation {
+  id            Int      @id @default(autoincrement())
+  phoneNumber   String
+  ipAddress     String
+  violationType String // "MINUTE" or "DAILY"
+  createdAt     DateTime @default(now())
+}
