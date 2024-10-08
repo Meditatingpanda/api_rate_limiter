@@ -18,6 +18,9 @@ export const rateLimiter = async (
   }
 
   try {
+    // log the request
+    logger(req.method, ipAddress, phoneNum);
+
     let rateLimit = await prisma.rateLimit.findUnique({
       where: {
         phoneNumber_ipAddress: {
@@ -56,6 +59,7 @@ export const rateLimiter = async (
     // Check for rate limit violations
     if (rateLimit.minuteCount >= minuteLimit) {
       await createViolation(phoneNum, ipAddress, "MINUTE");
+      logger(req.method, ipAddress, phoneNum, "Violation", "MINUTE");
       return sendRateLimitResponse(
         res,
         60,
@@ -66,6 +70,7 @@ export const rateLimiter = async (
 
     if (rateLimit.dailyCount >= dailyLimit) {
       await createViolation(phoneNum, ipAddress, "DAILY");
+      logger(req.method, ipAddress, phoneNum, "Violation", "DAILY");
       return sendRateLimitResponse(
         res,
         86400,
@@ -113,3 +118,15 @@ function sendRateLimitResponse(
   res.setHeader("X-RateLimit-Remaining", remaining.toString());
   return res.status(429).json({ error: "Too Many Requests" });
 }
+
+const logger = (
+  method: string,
+  ip: string,
+  phoneNum: string,
+  message?: string,
+  violationType?: string
+) => {
+  console.log(
+    `$${method} --> ${ip} ${phoneNum} ${violationType} ${message} ${new Date().toISOString()}`
+  );
+};

@@ -1,6 +1,7 @@
 import express, { RequestHandler } from "express";
 import dotenv from "dotenv";
 import { rateLimiter } from "./middleware/rateLimiter";
+import { errorHandler } from "./middleware/errorHandlerMiddleware";
 
 dotenv.config();
 
@@ -13,6 +14,8 @@ app.get("/", rateLimiter as RequestHandler, (req, res) => {
   console.log(req.ip);
   res.send("Hello World");
 });
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 8080;
 
