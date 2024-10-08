@@ -12,75 +12,104 @@ export const rateLimiter = async (
   const dailyLimit = parseInt(process.env.DAILY_LIMIT || "10");
 
   if (!phoneNum || !ipAddress) {
-    return res.status(400).send("Bad Request");
+    return res
+      .status(400)
+      .json({ error: "Bad Request: Missing phone number or IP address" });
   }
 
-  let rateLimit = await prisma.rateLimit.findUnique({
-    where: {
-      phoneNumber_ipAddress: {
-        phoneNumber: phoneNum,
-        ipAddress: ipAddress as string,
-      },
-    },
-  });
-
-  if (!rateLimit) {
-    rateLimit = await prisma.rateLimit.create({
-      data: {
-        phoneNumber: phoneNum,
-        ipAddress: ipAddress as string,
+  try {
+    let rateLimit = await prisma.rateLimit.findUnique({
+      where: {
+        phoneNumber_ipAddress: {
+          phoneNumber: phoneNum,
+          ipAddress: ipAddress as string,
+        },
       },
     });
-  }
-  // checks minutes.day violations, and throw error with appropriate headers
 
-  if (rateLimit.minuteCount >= minuteLimit) {
-    res.setHeader("Retry-After", "60");
-    res.setHeader("X-RateLimit-Limit", minuteLimit);
-    res.setHeader("X-RateLimit-Remaining", minuteLimit - rateLimit.minuteCount);
-    await prisma.rateViolation.create({
-      data: {
-        phoneNumber: phoneNum,
-        ipAddress: ipAddress as string,
-        violationType: "MINUTE",
-      },
+    if (!rateLimit) {
+      rateLimit = await prisma.rateLimit.create({
+        data: {
+          phoneNumber: phoneNum,
+          ipAddress: ipAddress as string,
+          minuteCount: 0,
+          dailyCount: 0,
+          lastMinuteReset: new Date(),
+          lastDailyReset: new Date(),
+        },
+      });
+    }
+
+    const now = new Date();
+
+    // Reset counters if necessary
+    if (rateLimit.lastMinuteReset < new Date(now.getTime() - 60000)) {
+      rateLimit.minuteCount = 0;
+      rateLimit.lastMinuteReset = now;
+    }
+
+    if (rateLimit.lastDailyReset < new Date(now.getTime() - 86400000)) {
+      rateLimit.dailyCount = 0;
+      rateLimit.lastDailyReset = now;
+    }
+
+    // Check for rate limit violations
+    if (rateLimit.minuteCount >= minuteLimit) {
+      await createViolation(phoneNum, ipAddress, "MINUTE");
+      return sendRateLimitResponse(
+        res,
+        60,
+        minuteLimit,
+        minuteLimit - rateLimit.minuteCount
+      );
+    }
+
+    if (rateLimit.dailyCount >= dailyLimit) {
+      await createViolation(phoneNum, ipAddress, "DAILY");
+      return sendRateLimitResponse(
+        res,
+        86400,
+        dailyLimit,
+        dailyLimit - rateLimit.dailyCount
+      );
+    }
+
+    // Increment counters
+    rateLimit.minuteCount++;
+    rateLimit.dailyCount++;
+
+    // Update the rate limit record
+    await prisma.rateLimit.update({
+      where: { id: rateLimit.id },
+      data: rateLimit,
     });
-    return res.status(429).send("Too Many Requests");
+
+    next();
+  } catch (error) {
+    console.error("Rate limiter error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-
-  if (rateLimit.dailyCount >= dailyLimit) {
-    res.setHeader("Retry-After", "86400");
-    res.setHeader("X-RateLimit-Limit", dailyLimit);
-    res.setHeader("X-RateLimit-Remaining", dailyLimit - rateLimit.dailyCount);
-    await prisma.rateViolation.create({
-      data: {
-        phoneNumber: phoneNum,
-        ipAddress: ipAddress as string,
-        violationType: "DAILY",
-      },
-    });
-    return res.status(429).send("Too Many Requests");
-  }
-
-  if (rateLimit.lastMinuteReset < new Date(Date.now() - 60000)) {
-    rateLimit.minuteCount = 0;
-    rateLimit.lastMinuteReset = new Date();
-  }
-
-  if (rateLimit.lastDailyReset < new Date(Date.now() - 86400000)) {
-    rateLimit.dailyCount = 0;
-    rateLimit.lastDailyReset = new Date();
-  }
-
-  rateLimit.minuteCount++;
-  rateLimit.dailyCount++;
-
-  await prisma.rateLimit.update({
-    where: {
-      id: rateLimit.id,
-    },
-    data: rateLimit,
-  });
-
-  next();
 };
+
+// Helper functions
+async function createViolation(
+  phoneNumber: string,
+  ipAddress: string,
+  violationType: "MINUTE" | "DAILY"
+) {
+  await prisma.rateViolation.create({
+    data: { phoneNumber, ipAddress, violationType },
+  });
+}
+
+function sendRateLimitResponse(
+  res: Response,
+  retryAfter: number,
+  limit: number,
+  remaining: number
+) {
+  res.setHeader("Retry-After", retryAfter.toString());
+  res.setHeader("X-RateLimit-Limit", limit.toString());
+  res.setHeader("X-RateLimit-Remaining", remaining.toString());
+  return res.status(429).json({ error: "Too Many Requests" });
+}
