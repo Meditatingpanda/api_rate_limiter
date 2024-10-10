@@ -59,7 +59,7 @@ export function SmsHistoryChart({ refresh }: { refresh: number }) {
     const dateCounts: { [key: string]: number } = {}
 
     data.forEach((sms) => {
-      const date = new Date(sms.createdAt).toISOString().split('T')[0]
+      const date = new Date(sms.createdAt).toLocaleDateString()
       dateCounts[date] = (dateCounts[date] || 0) + 1
     })
 

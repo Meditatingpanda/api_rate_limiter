@@ -14,7 +14,6 @@ export function RateLimitStatus({ refresh }: { refresh: number }) {
   const [rateLimits, setRateLimits] = useState<RateLimitStatus[]>([])
 
   useEffect(() => {
-    
     smsApiServices
       .getRateLimitStatus(TIME_INTERVAL_IN_SECONDS.TWO_DAYS)
       .then((data) => {
@@ -22,13 +21,16 @@ export function RateLimitStatus({ refresh }: { refresh: number }) {
       })
   }, [refresh])
 
-  console.log(rateLimits)
-
   return (
     <div className='max-h-[400px] space-y-8 overflow-y-auto'>
-      {rateLimits?.map((rateLimit) => (
-        <RateLimitStatusCard key={rateLimit.id} rateLimits={rateLimit} />
-      ))}
+      {rateLimits
+        ?.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+        ?.map((rateLimit) => (
+          <RateLimitStatusCard key={rateLimit.id} rateLimits={rateLimit} />
+        ))}
     </div>
   )
 }
