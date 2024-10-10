@@ -78,4 +78,13 @@ export const smsController = {
       res.status(500).json({ message: "Internal server error" });
     }
   },
+  getAllSms: async (req: Request, res: Response): Promise<any> => {
+    try {
+      const sms = await prisma.sms.findMany();
+      res.status(200).json({ sms });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
 };

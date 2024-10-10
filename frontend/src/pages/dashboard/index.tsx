@@ -5,11 +5,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ThemeSwitch from '@/components/theme-switch'
 import { UserNav } from '@/components/user-nav'
 import { RateLimitStatus } from './components/rate-limit-status'
-import { Overview } from './components/overview'
+
 import { useEffect, useState } from 'react'
 import smsApiServices from '@/services/smsService'
 import { TIME_INTERVAL_IN_SECONDS } from '@/constants/time.constant'
 import ApiTestingPlayground from './components/api-testing-playground'
+import { SmsHistoryChart } from './components/sms-history-chart'
 
 export default function Dashboard() {
   const [smsSentOneDay, setSmsSentOneDay] = useState(0)
@@ -41,8 +42,6 @@ export default function Dashboard() {
 
     fetchSmsData()
   }, [refresh])
-
-  
 
   return (
     <Layout>
@@ -155,10 +154,10 @@ export default function Dashboard() {
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
               <Card className='col-span-1 lg:col-span-4'>
                 <CardHeader>
-                  <CardTitle>Overview</CardTitle>
+                  <CardTitle>SMS History</CardTitle>
                 </CardHeader>
                 <CardContent className='pl-2'>
-                  <Overview />
+                  <SmsHistoryChart />
                 </CardContent>
               </Card>
               <Card className='col-span-1 lg:col-span-3'>

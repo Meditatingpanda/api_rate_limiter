@@ -10,4 +10,7 @@ router.get("/total-sms-sent", smsController.getSmsSent);
 
 router.get("/rate-limit-status", smsController.getRateLimitStatus);
 
+router.get("/get-all-sms", smsController.getAllSms);
+
+
 export default router;
