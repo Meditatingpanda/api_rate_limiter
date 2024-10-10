@@ -35,7 +35,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function SmsHistoryChart() {
+export function SmsHistoryChart({ refresh }: { refresh: number }) {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([])
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export function SmsHistoryChart() {
     }
 
     fetchSmsData()
-  }, [])
+  }, [refresh])
 
   const processDataForChart = (data: SmsData[]): ChartDataPoint[] => {
     const dateCounts: { [key: string]: number } = {}
@@ -94,15 +94,8 @@ export function SmsHistoryChart() {
               tickMargin={8}
               tickFormatter={(value) => new Date(value).toLocaleDateString()}
             />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent />}
-            />
+            <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Line
               dataKey='count'
               type='monotone'
