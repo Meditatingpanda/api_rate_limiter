@@ -1,10 +1,9 @@
-import { Button } from "./components/ui/button";
-
+import Overview from "./pages/Overview";
 function App() {
   return (
     <>
-      <div >
-        <Button variant="destructive">Hey</Button>
+      <div>
+        <Overview />
       </div>
     </>
   );

@@ -1,6 +1,5 @@
 import express, { RequestHandler } from "express";
 import dotenv from "dotenv";
-import { rateLimiter } from "./middleware/rateLimiter";
 import { errorHandler } from "./middleware/errorHandlerMiddleware";
 import smsRoutes from "./routes/smsRoutes";
 
@@ -11,11 +10,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/health-check", (req, res) => {
+app.get("/api/v1/health-check", (req, res) => {
   res.status(200).json({ message: "Server is running" });
 });
 
-app.use("/sms", smsRoutes);
+app.use("/api/v1/sms", smsRoutes);
 
 app.use(errorHandler);
 
