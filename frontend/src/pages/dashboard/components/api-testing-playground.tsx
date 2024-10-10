@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react'
 import { Button } from '@/components/custom/button'
 import { Input } from '@/components/ui/input'
@@ -11,7 +12,7 @@ const ApiTestingPlayground = ({
   setRefresh: React.Dispatch<React.SetStateAction<number>>
 }) => {
   const [phoneNumber, setPhoneNumber] = useState('')
-  const [response, setResponse] = useState<any>(null)
+  const [response, setResponse] = useState(null)
   const [statusCode, setStatusCode] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
