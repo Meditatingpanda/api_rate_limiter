@@ -29,3 +29,11 @@ model RateViolation {
   violationType String // "MINUTE" or "DAILY"
   createdAt     DateTime @default(now())
 }
+
+model Sms {
+  id        Int      @id @default(autoincrement())
+  phoneNumber String
+  message String 
+  createdAt DateTime @default(now())
+}
+

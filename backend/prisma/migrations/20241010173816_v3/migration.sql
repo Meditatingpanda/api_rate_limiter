@@ -1,0 +1,7 @@
+-- CreateTable
+CREATE TABLE "Sms" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "phoneNumber" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

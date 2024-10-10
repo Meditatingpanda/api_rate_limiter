@@ -1,11 +1,13 @@
-import express from "express";
+import express, { RequestHandler } from "express";
+import { smsController } from "../controller/smsController";
+import { rateLimiter } from "../middleware/rateLimiter";
 
 const router = express.Router();
 
-router.post("/send-sms", (req, res) => {
-  res.send("Hello World");
-});
+router.post("/send", rateLimiter as RequestHandler, smsController.sendSms);
 
+router.get("/total-sms-sent", smsController.getSmsSent);
 
+router.get("/rate-limit-status", smsController.getRateLimitStatus);
 
 export default router;

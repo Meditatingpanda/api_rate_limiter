@@ -2,6 +2,7 @@ import express, { RequestHandler } from "express";
 import dotenv from "dotenv";
 import { rateLimiter } from "./middleware/rateLimiter";
 import { errorHandler } from "./middleware/errorHandlerMiddleware";
+import smsRoutes from "./routes/smsRoutes";
 
 dotenv.config();
 
@@ -10,10 +11,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", rateLimiter as RequestHandler, (req, res) => {
-  console.log(req.ip);
-  res.send("Hello World");
+app.get("/health-check", (req, res) => {
+  res.status(200).json({ message: "Server is running" });
 });
+
+app.use("/sms", smsRoutes);
 
 app.use(errorHandler);
 
