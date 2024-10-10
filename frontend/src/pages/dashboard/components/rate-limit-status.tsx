@@ -14,11 +14,16 @@ export function RateLimitStatus({ refresh }: { refresh: number }) {
   const [rateLimits, setRateLimits] = useState<RateLimitStatus[]>([])
 
   useEffect(() => {
-    smsApiServices
-      .getRateLimitStatus(TIME_INTERVAL_IN_SECONDS.TWO_DAYS)
-      .then((data) => {
-        setRateLimits(data?.rateLimitViolations)
-      })
+    const fetchRateLimitStatus = async () => {
+      try {
+        const data = await smsApiServices.getRateLimitStatus(TIME_INTERVAL_IN_SECONDS.TWO_DAYS)
+        setRateLimits(data?.rateLimitViolations || [])
+      } catch (error) {
+        console.error('Error fetching rate limit status:', error)
+      }
+    }
+
+    fetchRateLimitStatus()
   }, [refresh])
 
   return (
