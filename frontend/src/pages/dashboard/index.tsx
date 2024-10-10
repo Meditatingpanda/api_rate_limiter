@@ -1,20 +1,49 @@
 import { Layout } from '@/components/custom/layout'
-import { Button } from '@/components/custom/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Search } from '@/components/search'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ThemeSwitch from '@/components/theme-switch'
 import { UserNav } from '@/components/user-nav'
-import { RecentSales } from './components/recent-sales'
+import { RateLimitStatus } from './components/rate-limit-status'
 import { Overview } from './components/overview'
+import { useEffect, useState } from 'react'
+import smsApiServices from '@/services/smsService'
+import { TIME_INTERVAL_IN_SECONDS } from '@/constants/time.constant'
+import ApiTestingPlayground from './components/api-testing-playground'
 
 export default function Dashboard() {
+  const [smsSentOneDay, setSmsSentOneDay] = useState(0)
+  const [smsSentTwoDays, setSmsSentTwoDays] = useState(0)
+  const [smsSentOneMinute, setSmsSentOneMinute] = useState(0)
+  const [refresh, setRefresh] = useState(0)
+
+  useEffect(() => {
+    const fetchSmsData = async () => {
+      try {
+        const oneDayData = await smsApiServices.getSmsSent(
+          TIME_INTERVAL_IN_SECONDS.ONE_DAY
+        )
+        setSmsSentOneDay(oneDayData.sms.length)
+
+        const twoDaysData = await smsApiServices.getSmsSent(
+          TIME_INTERVAL_IN_SECONDS.TWO_DAYS
+        )
+        setSmsSentTwoDays(twoDaysData.sms.length)
+
+        const oneMinuteData = await smsApiServices.getSmsSent(
+          TIME_INTERVAL_IN_SECONDS.ONE_MINUTE
+        )
+        setSmsSentOneMinute(oneMinuteData.sms.length)
+      } catch (error) {
+        console.error('Error fetching SMS data:', error)
+      }
+    }
+
+    fetchSmsData()
+  }, [refresh])
+
+  
+
   return (
     <Layout>
       {/* ===== Top Heading ===== */}
@@ -48,7 +77,7 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Total Revenue
+                    SMS Sent ( in last 24 hours )
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -64,16 +93,44 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>$45,231.89</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +20.1% from last month
-                  </p>
+                  <div className='text-2xl font-bold'>{smsSentOneDay}</div>
+                  {smsSentTwoDays !== 0 && (
+                    <p className='flex items-center text-xs'>
+                      {(() => {
+                        const percentChange =
+                          ((smsSentOneDay - smsSentTwoDays) / smsSentTwoDays) *
+                          100
+                        const isPositive = percentChange > 0
+                        const absPercentChange =
+                          Math.abs(percentChange).toFixed(1)
+                        return (
+                          <>
+                            <span
+                              className={`mr-1 ${isPositive ? 'text-green-500' : 'text-red-500'}`}
+                            >
+                              {isPositive ? '↑' : '↓'}
+                            </span>
+                            <span
+                              className={
+                                isPositive ? 'text-green-500' : 'text-red-500'
+                              }
+                            >
+                              {absPercentChange}%
+                            </span>
+                            <span className='ml-1 text-muted-foreground'>
+                              from previous day
+                            </span>
+                          </>
+                        )
+                      })()}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Subscriptions
+                    SMS sent ( in last 1 minute )
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -91,59 +148,7 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>+2350</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +180.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>Sales</CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <rect width='20' height='14' x='2' y='5' rx='2' />
-                    <path d='M2 10h20' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+12,234</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +19% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Active Now
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+573</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +201 since last hour
-                  </p>
+                  <div className='text-2xl font-bold'>{smsSentOneMinute}</div>
                 </CardContent>
               </Card>
             </div>
@@ -158,16 +163,17 @@ export default function Dashboard() {
               </Card>
               <Card className='col-span-1 lg:col-span-3'>
                 <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
-                  <CardDescription>
-                    You made 265 sales this month.
-                  </CardDescription>
+                  <CardTitle>Rate Limit Status ( in last 1 day )</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <RecentSales />
+                  <RateLimitStatus refresh={refresh} />
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value='api-testing'>
+            <ApiTestingPlayground setRefresh={setRefresh} />
           </TabsContent>
         </Tabs>
       </Layout.Body>
