@@ -28,8 +28,8 @@ To set up and run this project locally, follow these steps:
 1. Clone the repository:
 
    ```
-   git clone <repository-url>
-   cd <repository-name>
+   git clone https://github.com/Meditatingpanda/api_rate_limiter
+   cd api_rate_limiter
    ```
 
 2. Install the required dependencies:
@@ -68,5 +68,3 @@ The API should now be running locally, typically at `http://localhost:8080`. You
 - `GET /api/v1/sms`: Get all SMS
 
 For more details on these endpoints, refer to the `smsController.ts` file:
-
-
