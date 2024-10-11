@@ -79,23 +79,23 @@ To set up and run this project locally, follow these steps:
    ```
    npm run dev
    ```
-NOTE: if your port 8080 is not available , make following changes
+NOTE: if your port 8080 is not available, make the following changes
 
-Update PORT Inside the backend
+Update PORT Inside the backend.
 
-Update Api url in the constant file `frontend/src/constants/API.ts`
+Update API url in the constant file `frontend/src/constants/API.ts`
 
-As we are using concurrently for this, it should run both frontend , and backend for this
+As we are using it concurrently for this, it should run both frontend and backend for this
 
 Frontend URL: `http://localhost:5173`
 
-Backend URL:`http://localhost:8080`
+Backend URL: `http://localhost:8080`
 
 ## API Endpoints
 
 - `POST /api/v1/sms`: Send an SMS
-- `GET /api/v1/sms/sent`: Get the number of SMS sent in a specified time range
-- `GET /api/v1/sms/rate-limit-status`: Get the rate limit status
+- `GET /api/v1/sms/sent`: Get the number of SMS sent in a specified time range in seconds
+- `GET /api/v1/sms/rate-limit-status`: Get the rate limit status in the specified time range in seconds
 - `GET /api/v1/sms`: Get all SMS
 
 For more details on these endpoints, refer to the `smsController.ts` file:
