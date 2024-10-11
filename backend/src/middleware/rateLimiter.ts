@@ -126,7 +126,13 @@ const logger = (
   message?: string,
   violationType?: string
 ) => {
-  console.log(
-    `$${method} --> ${ip} ${phoneNum} ${violationType} ${message} ${new Date().toISOString()}`
-  );
+  const logParts = [
+    `${method} -->`,
+    ip,
+    phoneNum,
+    violationType || '',
+    message || '',
+    new Date().toISOString()
+  ];
+  console.log(logParts.filter(Boolean).join(' '));
 };

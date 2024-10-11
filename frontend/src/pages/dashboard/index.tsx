@@ -99,6 +99,7 @@ export default function Dashboard() {
                         const percentChange =
                           ((smsSentOneDay - smsSentTwoDays) / smsSentTwoDays) *
                           100
+                        console.log(smsSentOneDay, smsSentTwoDays)
                         const isPositive = percentChange > 0
                         const absPercentChange =
                           Math.abs(percentChange).toFixed(1)
