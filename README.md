@@ -4,7 +4,9 @@ This project demonstrates a rate-limited API implementation using SQLite as the 
 ## Dark Mode
 <img width="1488" alt="Screenshot 2024-10-11 at 5 36 22 AM" src="https://github.com/user-attachments/assets/5c232fd0-5bdd-43cd-a16e-4ccf68915807">
 <img width="1488" alt="Screenshot 2024-10-11 at 5 37 44 AM" src="https://github.com/user-attachments/assets/0ac0f333-91ef-4288-a17a-311c26094dc0">
+
 ## Light Mode
+
 <img width="1488" alt="Screenshot 2024-10-11 at 5 38 31 AM" src="https://github.com/user-attachments/assets/55fd1ca2-a23b-464a-ad30-8ac53d0288c9">
 
 
@@ -45,7 +47,7 @@ To set up and run this project locally, follow these steps:
    ```
 
 3. Set up your environment variables:
-   Create a `.env` file in the root of backend directory and add your database URL:
+   Create a `.env` file in the root of backend directory and add your database URL: ( Note: .env file kept intentionally in version control, if not present add this by following above instructions)
 
    ```
    DATABASE_URL="file:./dev.db"
