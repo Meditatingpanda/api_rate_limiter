@@ -163,7 +163,7 @@ export default function Dashboard() {
               </Card>
               <Card className='col-span-1 lg:col-span-3'>
                 <CardHeader>
-                  <CardTitle>Rate Limit Status ( in last 1 day )</CardTitle>
+                  <CardTitle>Rate Limit Status ( in last hour )</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <RateLimitStatus refresh={refresh} />

@@ -16,7 +16,7 @@ export function RateLimitStatus({ refresh }: { refresh: number }) {
   useEffect(() => {
     const fetchRateLimitStatus = async () => {
       try {
-        const data = await smsApiServices.getRateLimitStatus(TIME_INTERVAL_IN_SECONDS.TWO_DAYS)
+        const data = await smsApiServices.getRateLimitStatus(TIME_INTERVAL_IN_SECONDS.ONE_HOUR)
         setRateLimits(data?.rateLimitViolations || [])
       } catch (error) {
         console.error('Error fetching rate limit status:', error)
