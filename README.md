@@ -22,6 +22,24 @@ The rate limiting in this project is implemented using a token bucket algorithm.
 
 The implementation stores the last request timestamp and remaining tokens for each user in the SQLite database. This allows for persistent rate limiting across server restarts.
 
+### Implementation Details
+
+The rate limiting is implemented using two main components:
+
+1. **Database Schema**: We use Prisma with SQLite to define two models:
+   - `RateLimit`: Stores the current rate limit status for each user.
+   - `RateViolation`: Records any rate limit violations.
+
+2. **Middleware**: A `rateLimiter` middleware that:
+   - Retrieves or creates a rate limit record for each request.
+   - Resets counters if the time window has passed.
+   - Checks for and records violations.
+   - Updates the rate limit record after each request.
+
+The rate limits are configurable through environment variables:
+- `MINUTE_LIMIT`: Maximum requests allowed per minute (default: 3)
+- `DAILY_LIMIT`: Maximum requests allowed per day (default: 10)
+
 ## SQLite as Database
 
 SQLite is chosen as the database for this project for several reasons:
@@ -61,8 +79,17 @@ To set up and run this project locally, follow these steps:
    ```
    npm run dev
    ```
+NOTE: if your port 8080 is not available , make following changes
 
-The API should now be running locally, typically at `http://localhost:8080`. You can test the rate-limited endpoints using tools like cURL or Postman.
+Update PORT Inside the backend
+
+Update Api url in the constant file `frontend/src/constants/API.ts`
+
+As we are using concurrently for this, it should run both frontend , and backend for this
+
+Frontend URL: `http://localhost:5173`
+
+Backend URL:`http://localhost:8080`
 
 ## API Endpoints
 
