@@ -8,6 +8,8 @@ This project demonstrates a rate-limited API implementation using SQLite as the 
 ## Light Mode
 
 <img width="1488" alt="Screenshot 2024-10-11 at 5 38 31 AM" src="https://github.com/user-attachments/assets/55fd1ca2-a23b-464a-ad30-8ac53d0288c9">
+<img width="1488" alt="Screenshot 2024-10-11 at 5 57 18 AM" src="https://github.com/user-attachments/assets/f51a1eab-b778-46aa-a4b1-b164d8135089">
+<img width="1488" alt="Screenshot 2024-10-11 at 5 57 46 AM" src="https://github.com/user-attachments/assets/7386d7da-664f-48fd-b518-c2036a788cc1">
 
 
 ## Rate Limiting Approach
