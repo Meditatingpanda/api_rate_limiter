@@ -36,6 +36,9 @@ export function RateLimitStatus({ refresh }: { refresh: number }) {
         ?.map((rateLimit) => (
           <RateLimitStatusCard key={rateLimit.id} rateLimits={rateLimit} />
         ))}
+      {!rateLimits.length && (
+        <div className='text-center text-sm text-gray-500 mt-28'>No rate limit violations found</div>
+      )}
     </div>
   )
 }

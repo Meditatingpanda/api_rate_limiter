@@ -3,6 +3,8 @@ import GeneralError from './pages/errors/general-error'
 import NotFoundError from './pages/errors/not-found-error'
 import MaintenanceError from './pages/errors/maintenance-error'
 import UnauthorisedError from './pages/errors/unauthorised-error.tsx'
+import AppShell from './components/app-shell.tsx'
+import Dashboard from './pages/dashboard/index.tsx'
 
 const router = createBrowserRouter([
   
@@ -10,17 +12,19 @@ const router = createBrowserRouter([
   // Main routes
   {
     path: '/',
-    lazy: async () => {
-      const AppShell = await import('./components/app-shell')
-      return { Component: AppShell.default }
-    },
+    // lazy: async () => {
+    //   const AppShell = await import('./components/app-shell')
+    //   return { Component: AppShell.default }
+    // },
+    Component: AppShell,
     errorElement: <GeneralError />,
     children: [
       {
         index: true,
-        lazy: async () => ({
-          Component: (await import('./pages/dashboard')).default,
-        }),
+        // lazy: async () => ({
+        //   Component: (await import('./pages/dashboard')).default,
+        // }),
+        Component: Dashboard,
       },
     
     ],
