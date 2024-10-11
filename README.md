@@ -1,6 +1,12 @@
 # Rate-Limited API with SQLite
 
 This project demonstrates a rate-limited API implementation using SQLite as the database. It showcases an approach to rate limiting and provides a simple setup for local development.
+## Dark Mode
+<img width="1488" alt="Screenshot 2024-10-11 at 5 36 22 AM" src="https://github.com/user-attachments/assets/5c232fd0-5bdd-43cd-a16e-4ccf68915807">
+<img width="1488" alt="Screenshot 2024-10-11 at 5 37 44 AM" src="https://github.com/user-attachments/assets/0ac0f333-91ef-4288-a17a-311c26094dc0">
+## Light Mode
+<img width="1488" alt="Screenshot 2024-10-11 at 5 38 31 AM" src="https://github.com/user-attachments/assets/55fd1ca2-a23b-464a-ad30-8ac53d0288c9">
+
 
 ## Rate Limiting Approach
 
