@@ -39,7 +39,7 @@ To set up and run this project locally, follow these steps:
    ```
 
 3. Set up your environment variables:
-   Create a `.env` file in the root directory and add your database URL:
+   Create a `.env` file in the root of backend directory and add your database URL:
 
    ```
    DATABASE_URL="file:./dev.db"
@@ -47,13 +47,7 @@ To set up and run this project locally, follow these steps:
    DAILY_LIMIT=10
    ```
 
-4. Initialize the SQLite database:
-
-   ```
-   npx prisma migrate dev
-   ```
-
-5. Run the application:
+4. Run the application:
    ```
    npm run dev
    ```
